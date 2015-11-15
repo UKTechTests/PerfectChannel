@@ -14,29 +14,36 @@ namespace PerfectChannel.App
 
             while (true)
             {
-                var input = Console.ReadLine();
-
-                if (string.IsNullOrEmpty(input)) return;
-
-                if (!_isInitialised)
+                try
                 {
-                    app.InitLawn(input);
+                    var input = Console.ReadLine();
 
-                    _isInitialised = true;
+                    if (string.IsNullOrEmpty(input)) return;
 
-                    continue;
+                    if (!_isInitialised)
+                    {
+                        app.InitLawn(input);
+
+                        _isInitialised = true;
+
+                        continue;
+                    }
+
+                    if (_isDeploying)
+                    {
+                        app.InitMower(input);
+                    }
+                    else
+                    {
+                        Console.WriteLine(app.RunCommand(input));
+                    }
+
+                    _isDeploying = !_isDeploying;
                 }
-
-                if (_isDeploying)
+                catch (Exception e)
                 {
-                    app.InitMower(input);
+                    Console.WriteLine(e.Message);
                 }
-                else
-                {
-                    Console.WriteLine(app.RunCommand(input));
-                }
-
-                _isDeploying = !_isDeploying;
             }
         }
     }
